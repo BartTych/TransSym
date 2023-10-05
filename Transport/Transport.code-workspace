@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Animation"
+		},
+		{
+			"path": "../City"
+		},
+		{
+			"path": "../FastProfile"
+		},
+		{
+			"path": "../RouteSearch"
+		},
+		{
+			"path": "../Symulation"
+		},
+		{
+			"path": "../TrafficMenagement"
+		}
+	],
+	"settings": {}
+}
