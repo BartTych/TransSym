@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,19 +49,31 @@ namespace Symulation
                         // zapisuje sredni wynik w macierzy 
 
 
-                /*
-                for(double sort_shift = 0; sort_shift < 0.1; sort_shift += 0.1)
-                {   
-                    for(double DC_shift = 1; DC_shift <= 2; DC_shift += 0.1)
+                
+                double sort_shift = 0;
+                var results = new Sym_result_storage("wyniki.txt");
+                // tu robie przygotowanie pliku tekstowego
+                for (double DC_size = 5; DC_size < 7; DC_size++)
+                {
+                    for(double DC_shift = 1; DC_shift <= 1.5; DC_shift += 0.1)
                     {
-                        sym_control = new Symulation_control(CityMap, list_of_modules, 24, sort_shift, 12, DC_shift);
-                        ride_repository = sym_control.run_symulation_v1(12000, 15600, 0.9);
+                        var sum_of_rides = 0;
+                        for(int i=0; i < 2; i++)
+                        {
+                            sym_control = new Symulation_control(CityMap, list_of_modules, DC_size * 2, sort_shift, DC_size, DC_shift);
+                            ride_repository = sym_control.run_symulation_v1(12000, 12050, 0.9);
+                            sum_of_rides += ride_repository.return_number_of_rides();
+                        }
+                        var average = sum_of_rides / 5;
+                        
+                        results.add_data_to_storage(DC_size*2,sort_shift,DC_size,DC_shift,average);
                     }
                 }
-                */
+
+                results.save_stored_data();
 
                 //System.Console.WriteLine("test");
-            
+                /*
                 var pod_animation = new OfflineRideDataPreparation(ride_repository);
                 var track_disp = new TrackDisplayDataPreparation(sym_control);
 
@@ -83,7 +96,7 @@ namespace Symulation
                 Console.WriteLine("track position data prepared");
                 
                 track_disp.save_data_to_file();
-
+                */
                 //pod_animation.statistics_of_directions();
 
 
@@ -135,6 +148,7 @@ namespace Symulation
             
         }
 
+        
         
         public static double get_speed_at_distance_from_profile(List<double[]> profile, double distance_from_start)
         {
@@ -248,10 +262,7 @@ namespace Symulation
 
         }
 
-public int test_method ()
-{
-return 5;
-}
+
 
 
         // [] w przygotowaniu danych pozycji dla sort sekcji brakuje mi dodania przsuniecie na bok
@@ -301,5 +312,47 @@ return 5;
 
         // zbudowanie konfiguracji strowanej z zewnatrz tak zeby moc szukac najbardziej optymalnych ustawien
         // przez uczenie maszynowe
+    }
+
+    public class Sym_result_storage
+    {
+        string data_storage_file;
+        StringBuilder builder;
+        List<string> list_of_sym_results;
+        
+        public Sym_result_storage(string data_storage_file)
+        {
+            this.data_storage_file = data_storage_file;
+            builder = new StringBuilder();
+            list_of_sym_results = new List<string>();
+            create_file_header();
+        }
+
+        private void create_file_header()
+        {
+            builder.Append("sort_size")
+                    .Append(", sort_shift")
+                    .Append(", DC_size")
+                    .Append(", sort_shift")
+                    .Append("ride_number");
+            list_of_sym_results.Add(builder.ToString());
+            builder.Clear();
+        }
+
+        public void add_data_to_storage(double sort_size, double sort_shift, double DC_size, double DC_shift, int ride_number)
+        {
+            builder.Append(sort_size.ToString())
+                    .Append("," + sort_shift.ToString())
+                    .Append("," + DC_size.ToString())
+                    .Append("," + DC_shift.ToString())
+                    .Append("," + ride_number.ToString());
+            list_of_sym_results.Add(builder.ToString()); 
+            builder.Clear();   
+        }
+
+        public void save_stored_data()
+        {
+            File.WriteAllLines(data_storage_file, list_of_sym_results);
+        }
     }
 }
