@@ -111,7 +111,7 @@ namespace Symulation
                 {
                     //generating interactions
                     // config is calculated earlier at the level of city sections creation 
-                    generate_interactions(46000, 2, 0.5); // seconds of interactions generated[m], length of pod, distance between pods[m]
+                    generate_interactions(25000, 2, 0.5); // seconds of interactions generated[m], length of pod, distance between pods[m]
                 }
 
 
@@ -1076,8 +1076,8 @@ namespace Symulation
                 //list.Add(new request(1, 4, time));
                 //list.Add(new request(2, 0, time));
                 //list.Add(new request(2, 3, time));
-                //list.Add(create_request_for_random_stations(time));
-                list.Add(create_request_for_max_load(time));
+                list.Add(create_request_for_random_stations(time));
+                //list.Add(create_request_for_max_load(time));
                 return list;
             }
             else

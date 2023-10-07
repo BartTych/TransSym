@@ -41,8 +41,8 @@ namespace Symulation
                 // zeby bylo tak ze zmniejsze wplyw losowosci/szum dzieki temu 
                 // wtedy wykresy beda ladniej wygladac co jest zajebiaszcze 
 
-                 var sym_control = new Symulation_control(CityMap, list_of_modules, 24, 0, 12, 1.45);
-                 var ride_repository = sym_control.run_symulation_v1(12000, 12350, 0.95);
+                 //var sym_control = new Symulation_control(CityMap, list_of_modules, 24, 0, 12, 1.45);
+                 //var ride_repository = sym_control.run_symulation_v1(12000, 12350, 0.95);
                 // petla zewnetrzna - dlugosc sekcji sort
                     // pertla  - shift sekcji DC
                         // petla z kilkukrotnym przeliczeniem x10 brzmi dobrze  - eliminacja szumu  
@@ -53,18 +53,18 @@ namespace Symulation
                 double sort_shift = 0;
                 var results = new Sym_result_storage("wyniki.txt");
                 // tu robie przygotowanie pliku tekstowego
-                for (double DC_size = 5; DC_size < 7; DC_size++)
+                for (double DC_size = 9; DC_size < 11; DC_size += 0.3)
                 {
-                    for(double DC_shift = 1; DC_shift <= 1.5; DC_shift += 0.1)
+                    for(double DC_shift = 0; DC_shift <= 2; DC_shift += 0.2)
                     {
                         var sum_of_rides = 0;
-                        for(int i=0; i < 2; i++)
+                        for(int i=0; i < 1; i++)
                         {
-                            sym_control = new Symulation_control(CityMap, list_of_modules, DC_size * 2, sort_shift, DC_size, DC_shift);
-                            ride_repository = sym_control.run_symulation_v1(12000, 12050, 0.9);
+                            var sym_control = new Symulation_control(CityMap, list_of_modules, DC_size * 2, sort_shift, DC_size, DC_shift);
+                            var ride_repository = sym_control.run_symulation_v1(12000, 12200, 0.9);
                             sum_of_rides += ride_repository.return_number_of_rides();
                         }
-                        var average = sum_of_rides / 5;
+                        var average = sum_of_rides / 1;
                         
                         results.add_data_to_storage(DC_size*2,sort_shift,DC_size,DC_shift,average);
                     }
