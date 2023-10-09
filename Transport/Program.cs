@@ -52,11 +52,18 @@ namespace Symulation
                 
                 double sort_shift = 0;
                 var results = new Sym_result_storage("wyniki.txt");
+                var list_of_DC_sizes = new List<double>();
+                var list_of_DC_shifts = new List<double>();
                 // tu robie przygotowanie pliku tekstowego
-                for (double DC_size = 9; DC_size < 11; DC_size += 0.3)
+                for (double DC_size = 5; DC_size < 12; DC_size += 0.25)
                 {
-                    for(double DC_shift = 0; DC_shift <= 2; DC_shift += 0.2)
+                    list_of_DC_sizes.Add(DC_size);
+                    
+                    for(double DC_shift = 0; DC_shift <= 2; DC_shift += 0.1)
                     {
+                        if(!list_of_DC_shifts.Contains(DC_shift))
+                            list_of_DC_shifts.Add(DC_shift);
+
                         var sum_of_rides = 0;
                         for(int i=0; i < 1; i++)
                         {
@@ -69,7 +76,16 @@ namespace Symulation
                         results.add_data_to_storage(DC_size*2,sort_shift,DC_size,DC_shift,average);
                     }
                 }
+                
 
+                // brakuje mi tego zeby zrobic tutaj header do danych 
+                // wogule jest tak ze przechowywanie danych bez headera to jest jakis rzarcik bo to ma mega nieciekawe 
+                // konsekwencje. szalone odczytywanie jakie tam sa w srodku dane itp. nigdzy nie wiadomo czy zrobie to ok czy nie i takie tam
+
+                // to co zrobie to:
+                // DC_size list, DC_shift list
+                // narazie to powinno wystarczyc
+                results.create_file_header(list_of_DC_sizes,list_of_DC_shifts);
                 results.save_stored_data();
 
                 //System.Console.WriteLine("test");
@@ -318,24 +334,47 @@ namespace Symulation
     {
         string data_storage_file;
         StringBuilder builder;
+        List<string> list_of_header_lines;
         List<string> list_of_sym_results;
         
         public Sym_result_storage(string data_storage_file)
         {
             this.data_storage_file = data_storage_file;
+
             builder = new StringBuilder();
+
+            list_of_header_lines = new List<string>();
             list_of_sym_results = new List<string>();
-            create_file_header();
         }
 
-        private void create_file_header()
+        public void create_file_header(List<double> DC_sizes, List<double> DC_shifts)
         {
+            for(int i = 0; i < DC_sizes.Count(); i++)
+            {
+                if(i == 0)
+                    builder.Append(DC_sizes[i].ToString());
+                else
+                    builder.Append(',' + DC_sizes[i].ToString());
+            }
+            list_of_header_lines.Add(builder.ToString());
+            builder.Clear();
+
+            for(int i = 0; i < DC_shifts.Count(); i++)
+            {
+                if(i == 0)
+                    builder.Append(DC_shifts[i].ToString());
+                else
+                    builder.Append(',' + DC_shifts[i].ToString());
+            }
+            list_of_header_lines.Add(builder.ToString());
+            builder.Clear();
+
             builder.Append("sort_size")
                     .Append(", sort_shift")
                     .Append(", DC_size")
                     .Append(", sort_shift")
                     .Append("ride_number");
-            list_of_sym_results.Add(builder.ToString());
+            list_of_header_lines.Add(builder.ToString());
             builder.Clear();
         }
 
@@ -351,8 +390,9 @@ namespace Symulation
         }
 
         public void save_stored_data()
-        {
-            File.WriteAllLines(data_storage_file, list_of_sym_results);
+        {   
+            list_of_header_lines.AddRange(list_of_sym_results);
+            File.WriteAllLines(data_storage_file, list_of_header_lines);
         }
     }
 }
