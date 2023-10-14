@@ -14,9 +14,9 @@ namespace Symulation
         {
                 //System.Console.WriteLine(test_method());
             
-                
                 // chce zmienic predkosci wiec pytanie
                 // czy to w modulach czy gdzies dalej 
+                
                 var City = new LibraryOfCities();
                 var (CityMap,list_of_modules) = City.MiastoModulowe_v_1();
                 
@@ -54,21 +54,23 @@ namespace Symulation
                 var results = new Sym_result_storage("wyniki.txt");
                 var list_of_DC_sizes = new List<double>();
                 var list_of_DC_shifts = new List<double>();
+                
                 // tu robie przygotowanie pliku tekstowego
-                for (double DC_size = 4; DC_size < 15; DC_size += 0.25)
+                
+                for (double DC_size = 4; DC_size <= 15; DC_size += 0.25)
                 {
                     list_of_DC_sizes.Add(DC_size);
                     
-                    for(double DC_shift = 0; DC_shift <= 3; DC_shift += 0.1)
+                    for(double DC_shift = 0; DC_shift <= 3; DC_shift += 0.15)
                     {
                         if(!list_of_DC_shifts.Contains(DC_shift))
                             list_of_DC_shifts.Add(DC_shift);
 
-                        var sum_of_rides = 0;
+                            var sum_of_rides = 0;
                         for(int i=0; i < 2; i++)
                         {
                             var sym_control = new Symulation_control(CityMap, list_of_modules, DC_size * 2, sort_shift, DC_size, DC_shift);
-                            var ride_repository = sym_control.run_symulation_v1(12000, 12200, 0.9);
+                            var ride_repository = sym_control.run_symulation_v1(8000, 8200, 0.9);
                             sum_of_rides += ride_repository.return_number_of_rides();
                         }
                         var average = sum_of_rides / 2;
