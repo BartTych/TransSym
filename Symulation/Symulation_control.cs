@@ -111,7 +111,7 @@ namespace Symulation
                 {
                     //generating interactions
                     // config is calculated earlier at the level of city sections creation 
-                    generate_interactions(16000, 2, 0.5); // seconds of interactions generated[m], length of pod, distance between pods[m]
+                    generate_interactions(18000, 2, 0.5); // seconds of interactions generated[m], length of pod, distance between pods[m]
                 }
 
 

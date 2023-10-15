@@ -61,7 +61,7 @@ namespace Symulation
                 {
                     list_of_DC_sizes.Add(DC_size);
                     
-                    for(double DC_shift = 0; DC_shift <= 3; DC_shift += 0.15)
+                    for(double DC_shift = 0; DC_shift <= 5; DC_shift += 1)
                     {
                         if(!list_of_DC_shifts.Contains(DC_shift))
                             list_of_DC_shifts.Add(DC_shift);
@@ -70,7 +70,7 @@ namespace Symulation
                         for(int i=0; i < 2; i++)
                         {
                             var sym_control = new Symulation_control(CityMap, list_of_modules, DC_size * 2, sort_shift, DC_size, DC_shift);
-                            var ride_repository = sym_control.run_symulation_v1(8000, 8200, 0.9);
+                            var ride_repository = sym_control.run_symulation_v1(9000, 9200, 0.9);
                             sum_of_rides += ride_repository.return_number_of_rides();
                         }
                         var average = sum_of_rides / 2;
