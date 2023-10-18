@@ -25,9 +25,8 @@ namespace Symulation
                 CityMap.CalculateSpeedLimitForTracks();
                 
                 //calculate position of nodes 
-                CityMap.CalculatePositionOfNodes(true);
+                CityMap.CalculatePositionOfNodes(false);
 
-                var routeSearch = new SearchForRoutesMain(CityMap);
 
                 //var route = routeSearch.SeekRouteBetweenStations (1, 2);
                 //var profileGenerator = new FastestProfile(route[0], CityMap);
@@ -49,36 +48,15 @@ namespace Symulation
                         // zapisuje sredni wynik w macierzy 
 
 
+                // tu mi brakuje jeszcze zassanie info z pliku konfig
                 
-                double sort_shift = 0;
-                var results = new Sym_result_storage("wyniki.txt");
-                var list_of_DC_sizes = new List<double>();
-                var list_of_DC_shifts = new List<double>();
-                
+                var(DC_size, DC_shift, sort_size, sort_shift) = read_config_file();
                 // tu robie przygotowanie pliku tekstowego
                 
-                for (double DC_size = 4; DC_size <= 15; DC_size += 0.25)
-                {
-                    list_of_DC_sizes.Add(DC_size);
-                    
-                    for(double DC_shift = 0; DC_shift <= 5; DC_shift += 1)
-                    {
-                        if(!list_of_DC_shifts.Contains(DC_shift))
-                            list_of_DC_shifts.Add(DC_shift);
-
-                            var sum_of_rides = 0;
-                        for(int i=0; i < 2; i++)
-                        {
-                            var sym_control = new Symulation_control(CityMap, list_of_modules, DC_size * 2, sort_shift, DC_size, DC_shift);
-                            var ride_repository = sym_control.run_symulation_v1(9000, 9200, 0.9);
-                            sum_of_rides += ride_repository.return_number_of_rides();
-                        }
-                        var average = sum_of_rides / 2;
-                        
-                        results.add_data_to_storage(DC_size*2,sort_shift,DC_size,DC_shift,average);
-                    }
-                }
-                
+                var sym_control = new Symulation_control(CityMap, list_of_modules, sort_size, sort_shift, DC_size, DC_shift);
+                var ride_repository = sym_control.run_symulation_v1(20000, 20200, 0.9);
+                var number_of_rides = ride_repository.return_number_of_rides();
+                write_result_to_file(number_of_rides, "sym_result.txt");
 
                 // brakuje mi tego zeby zrobic tutaj header do danych 
                 // wogule jest tak ze przechowywanie danych bez headera to jest jakis rzarcik bo to ma mega nieciekawe 
@@ -87,8 +65,8 @@ namespace Symulation
                 // to co zrobie to:
                 // DC_size list, DC_shift list
                 // narazie to powinno wystarczyc
-                results.create_file_header(list_of_DC_sizes,list_of_DC_shifts);
-                results.save_stored_data();
+                //results.create_file_header(list_of_DC_sizes,list_of_DC_shifts);
+                //results.save_stored_data();
 
                 //System.Console.WriteLine("test");
                 /*
@@ -161,13 +139,33 @@ namespace Symulation
             }
             */
 
-            Console.WriteLine("ready");
-            Console.WriteLine("radosc :)");
+            // Console.WriteLine("ready");
+            // Console.WriteLine("radosc :)");
             
+            (double, double, double, double)read_config_file()
+            {
+                // read data
+                StreamReader sr = new StreamReader("sym_config.txt");
+
+                var header = sr.ReadLine();
+                var values = sr.ReadLine();
+                
+                values.ToString();
+                var test = values.Split(',');
+                return ( Convert.ToDouble(test[0]), Convert.ToDouble(test[1]), Convert.ToDouble(test[2]), Convert.ToDouble(test[3]));
+            }
+
+            void write_result_to_file(double number,string file)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Append(number.ToString());
+                var result = new List<string>(){builder.ToString()};
+                // tu pewnie moge to uproscic 
+                File.WriteAllLines(file, result);
+            }
+        
         }
 
-        
-        
         public static double get_speed_at_distance_from_profile(List<double[]> profile, double distance_from_start)
         {
             double speed = 0;

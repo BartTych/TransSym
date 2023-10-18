@@ -111,7 +111,7 @@ namespace Symulation
                 {
                     //generating interactions
                     // config is calculated earlier at the level of city sections creation 
-                    generate_interactions(18000, 2, 0.5); // seconds of interactions generated[m], length of pod, distance between pods[m]
+                    generate_interactions(75000, 2, 0.5); // seconds of interactions generated[m], length of pod, distance between pods[m]
                 }
 
 
@@ -534,20 +534,20 @@ namespace Symulation
             menagment_of_interactions.create_traverses_and_calculate_boundaries_of_traverses(end_time);
 
             //Console.WriteLine("faza 2");
-            menagment_of_interactions.calculate_interactions_between_boundaries_of_traverses(end_time - 1000);
+            menagment_of_interactions.calculate_interactions_between_boundaries_of_traverses(end_time - 1500);
 
             //Console.WriteLine("faza 3");
-            menagment_of_interactions.split_windows_of_interactions_for_DC_section_to_be_parallel(end_time - 2000);
+            menagment_of_interactions.split_windows_of_interactions_for_DC_section_to_be_parallel(end_time - 3000);
 
             //Console.WriteLine("faza 4");
             //tutaj sa generowane okna dla start and stop, bez modyfikacji sieci
-            menagment_of_interactions.generate_windows_for_start_and_stop(end_time - 3000);
+            menagment_of_interactions.generate_windows_for_start_and_stop(end_time - 4500);
 
             //Console.WriteLine("faza 5");
-            menagment_of_interactions.deactivate_excess_exit_for_sort_sections(end_time - 4000);
+            menagment_of_interactions.deactivate_excess_exit_for_sort_sections(end_time - 6000);
 
             //Console.WriteLine("faza 6");
-            menagment_of_interactions.calculate_max_pod_number_for_windows_and_start_distance_in_traverse(end_time - 5000, pod_length, min_distance);
+            menagment_of_interactions.calculate_max_pod_number_for_windows_and_start_distance_in_traverse(end_time - 7500, pod_length, min_distance);
 
             sym_data.last_end_time_for_calculated_interactions = end_time;
         }
